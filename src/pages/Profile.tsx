@@ -1,13 +1,14 @@
 import { CircleCheck, Gamepad2, Heart, Trophy } from "lucide-react";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import GameSelector, { type SelectedGame } from "../components/GameSelector";
 import UsernameInput, {
   type onStatusChangeProps,
 } from "../components/UsernameInput";
 
 function Profile() {
+  const navigate = useNavigate();
   const [username, setUsername] = useState<string>("");
-
   const [usernameStatus, setusernameStatus] =
     useState<onStatusChangeProps>("idle");
   const [selectedGames, setSelectedGames] = useState<SelectedGame[]>([]);
@@ -24,38 +25,60 @@ function Profile() {
     setSelectedGames(games);
   };
 
+  // Helper function to map selectedGames for API and navigation
+  const mapSelectedGames = (games: SelectedGame[]) => 
+    games.map((game) => ({
+      id: game.id,
+      title: game.title,
+      image: game.image,
+      maker: game.maker,
+      playTime: game.playTime,
+      favorite: game.favorite,
+    }));
+
+  // Helper function to map selectedGames for navigation state
+  const mapGamesForNavigation = (games: SelectedGame[]) =>
+    games.map((game) => ({
+      id: game.id,
+      name: game.title,
+      genre: game.maker,
+    }));
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (usernameStatus === "available") {
       try {
-        const gamesData = selectedGames.map(game => ({
-          id: game.id,
-          title: game.title,
-          image: game.image,
-          maker: game.maker,
-          playTime: game.playTime,
-          favorite: game.favorite
-        }));
+        const gamesData = mapSelectedGames(selectedGames);
 
-        const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}${username}.json`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            // username,
-            games: gamesData
-          }),
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_API_ENDPOINT}${username}.json`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              // username,
+              games: gamesData,
+            }),
+          }
+        );
 
         if (!response.ok) {
           const error = await response.json();
-          throw new Error(error.message || 'Failed to create profile');
+          throw new Error(error.message || "Failed to create profile");
         }
-        alert('Profile created successfully!');
+        // Navigate to profile success page after successful profile creation
+        navigate("/profile-success", {
+          state: {
+            profileCreated: true,
+            username: username,
+            games: mapGamesForNavigation(selectedGames),
+          },
+        });
       } catch (error) {
-        console.error('Error creating profile:', error);
-        alert('Failed to create profile. Please try again.');
+        console.error("Error creating profile:", error);
+        alert("Failed to create profile. Please try again.");
       }
     }
     return;
