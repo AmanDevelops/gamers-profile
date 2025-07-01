@@ -1,4 +1,5 @@
 import { Activity, Gamepad2, Trophy, Users } from "lucide-react";
+import { Link } from "react-router-dom";
 
 function Home() {
   return (
@@ -17,9 +18,9 @@ function Home() {
             connect with fellow gamers
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="cursor-pointer bg-purple-500 hover:bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">
+            <Link to="/profile" className="cursor-pointer bg-purple-500 hover:bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 inline-block text-center">
               Create Your Profile
-            </button>
+            </Link>
             <button className="cursor-pointer bg-gray-800 hover:bg-gray-700 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">
               Explore Profiles
             </button>
