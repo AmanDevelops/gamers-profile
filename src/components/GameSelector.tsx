@@ -12,7 +12,7 @@ export interface SelectedGame {
   id: number;
   title: string;
   image: string;
-  maker: string;
+  genres: string;
   playTime: string;
   favorite: boolean;
 }
@@ -31,7 +31,6 @@ function GameSelector({ onGamesSelected }: GameSelectorProps) {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -48,7 +47,6 @@ function GameSelector({ onGamesSelected }: GameSelectorProps) {
     };
   }, []);
 
-  // Fetch games from RAWG API with debounce
   useEffect(() => {
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
@@ -58,7 +56,6 @@ function GameSelector({ onGamesSelected }: GameSelectorProps) {
       setIsLoading(true);
       searchTimeoutRef.current = setTimeout(async () => {
         try {
-          // Replace axios with fetch API
           const response = await fetch(
             `https://api.rawg.io/api/games?search=${gameSearch}&key=${import.meta.env.VITE_RAWG_API_KEY}&page_size=5`
           );
@@ -91,20 +88,18 @@ function GameSelector({ onGamesSelected }: GameSelectorProps) {
     };
   }, [gameSearch]);
 
-  // Update parent component when selected games change
   useEffect(() => {
     if (onGamesSelected) {
       onGamesSelected(selectedGames);
     }
-  }, [selectedGames, onGamesSelected]);
+  }, [selectedGames]);
 
   const handleGameSelect = (game: ApiGame) => {
-    // Create a new game object with additional properties needed for the game card
     const newGame: SelectedGame = {
       id: game.id,
       title: game.name,
       image: game.image,
-      maker: game.genre,
+      genres: game.genre,
       playTime: "Finished",
       favorite: false,
     };
@@ -119,7 +114,6 @@ function GameSelector({ onGamesSelected }: GameSelectorProps) {
       <label className="block text-sm font-semibold mb-3 text-gray-200">
         Select Your Favorite Games
       </label>
-      {/* Game Search Dropdown */}
       <div className="relative" ref={dropdownRef}>
         <div className="relative">
           <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
@@ -141,7 +135,6 @@ function GameSelector({ onGamesSelected }: GameSelectorProps) {
           </div>
         </div>
 
-        {/* Dropdown */}
         {isDropdownOpen && (
           <div
             className="absolute z-50 w-full mt-2 rounded-xl border bg-gray-700 border-gray-600
@@ -176,7 +169,6 @@ function GameSelector({ onGamesSelected }: GameSelectorProps) {
         )}
       </div>
 
-      {/* Selected Games Grid */}
     </div>
   );
 }

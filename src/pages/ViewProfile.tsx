@@ -1,12 +1,12 @@
 import { CircleCheck, Gamepad2, Heart, Plus, Trophy } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 interface Game {
   id: number;
   title: string;
   image: string;
-  maker: string;
+  genres: string;
   playTime: string;
   favorite: boolean;
 }
@@ -25,7 +25,7 @@ function ViewProfile() {
         }
 
         const response = await fetch(
-          `https://api-gamify-default-rtdb.firebaseio.com/${username}.json`
+          `${import.meta.env.VITE_API_ENDPOINT}${username.toLowerCase()}.json`
         );
 
         if (!response.ok) {
@@ -83,7 +83,7 @@ function ViewProfile() {
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
-      {/* Header */}
+
       <header className="bg-black border-b border-purple-900/30 py-6">
         <div className="container mx-auto px-4 flex justify-between">
           <div className="flex items-center space-x-4">
@@ -92,7 +92,7 @@ function ViewProfile() {
               {username}'s Gaming Journey
             </h1>
           </div>
-          <button
+          <Link to="/create-profile"
             className="flex items-center gap-2 px-5 py-2.5 
                  bg-gradient-to-r from-purple-500 via-fuchsia-500 to-pink-500 
                  text-white text-base font-semibold 
@@ -103,11 +103,10 @@ function ViewProfile() {
           >
             <Plus className="w-5 h-5" />
             Create Your Profile Now
-          </button>
+          </Link>
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="container mx-auto px-4 py-12 flex-1">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {games.map((game, index) => (
@@ -139,7 +138,7 @@ function ViewProfile() {
                   </div>
                   <div className="flex items-center space-x-2 group-hover:translate-x-2 transition-transform duration-300">
                     <Trophy className="w-4 h-4 text-yellow-400" />
-                    <span className="text-gray-300">{game.maker}</span>
+                    <span className="text-gray-300">{game.genres}</span>
                   </div>
                 </div>
               </div>
@@ -148,12 +147,11 @@ function ViewProfile() {
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="bg-black border-t border-purple-900/30 py-6 mt-auto">
         <div className="container mx-auto px-4 text-center text-gray-500">
-          <p className="hover:text-purple-400 transition-colors duration-300">
-            © 2024 Gaming Journey | Built with React & Tailwind CSS
-          </p>
+            <p className="hover:text-purple-400 transition-colors duration-300">
+            <a href="https://github.com/amandevelops">© 2025 Gamify | Powered by coffee ☕ — Crafted by AmanDevelops 🛠️</a>
+            </p>
         </div>
       </footer>
     </div>

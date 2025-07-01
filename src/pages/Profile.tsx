@@ -21,27 +21,41 @@ function Profile() {
     setusernameStatus(status);
   };
 
-  const handleGamesSelected = (games: SelectedGame[]) => {
-    setSelectedGames(games);
+const handleGamesSelected = (games: SelectedGame[]) => {
+  setSelectedGames((prev) =>
+    games.map((newGame) => {
+      const existing = prev.find((g) => g.id === newGame.id);
+      return {
+        ...newGame,
+        favorite: existing?.favorite ?? false,
+      };
+    })
+  );
+};
+
+  const toggleFavourite = (id: number) => {
+    setSelectedGames((prev) =>
+      prev.map((game) =>
+        game.id === id ? { ...game, favorite: !game.favorite } : game
+      )
+    );
   };
 
-  // Helper function to map selectedGames for API and navigation
-  const mapSelectedGames = (games: SelectedGame[]) => 
+  const mapSelectedGames = (games: SelectedGame[]) =>
     games.map((game) => ({
       id: game.id,
       title: game.title,
       image: game.image,
-      maker: game.maker,
+      genres: game.genres,
       playTime: game.playTime,
       favorite: game.favorite,
     }));
 
-  // Helper function to map selectedGames for navigation state
   const mapGamesForNavigation = (games: SelectedGame[]) =>
     games.map((game) => ({
       id: game.id,
       name: game.title,
-      genre: game.maker,
+      genre: game.genres,
     }));
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -51,14 +65,13 @@ function Profile() {
         const gamesData = mapSelectedGames(selectedGames);
 
         const response = await fetch(
-          `${import.meta.env.VITE_API_ENDPOINT}${username}.json`,
+          `${import.meta.env.VITE_API_ENDPOINT}${username.toLowerCase()}.json`,
           {
             method: "PATCH",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              // username,
               games: gamesData,
             }),
           }
@@ -68,7 +81,6 @@ function Profile() {
           const error = await response.json();
           throw new Error(error.message || "Failed to create profile");
         }
-        // Navigate to profile success page after successful profile creation
         navigate("/profile-success", {
           state: {
             profileCreated: true,
@@ -86,7 +98,6 @@ function Profile() {
 
   return (
     <div className="min-h-screen transition-all duration-500 bg-gradient-to-b from-gray-900 to-black text-white">
-      {/* Hero Section */}
       <div className="container mx-auto px-4 max-w-5xl py-16">
         <div className="text-center mb-12">
           <div className="flex justify-center mb-6">
@@ -102,7 +113,6 @@ function Profile() {
           </p>
         </div>
 
-        {/* Create Profile Section */}
         <div className="relative z-10">
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="p-6 rounded-2xl bg-gray-800/50 backdrop-blur-sm border border-gray-700 transition-all duration-300">
@@ -113,15 +123,16 @@ function Profile() {
                 onUsernameChange={handleUsernameChange}
                 onStatusChange={handleStatusChange}
               />
-              <GameSelector onGamesSelected={handleGamesSelected} />
+              {usernameStatus == "available" && (
+                <GameSelector onGamesSelected={handleGamesSelected} />
+              )}
             </div>
 
-            {/* Submit Button */}
             {selectedGames.length > 0 && (
               <div className="flex justify-center mt-8">
                 <button
                   type="submit"
-                  className="px-8 py-3 bg-gradient-to-r from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 shadow-lg hover:shadow-purple-500/30"
+                  className="px-8 py-3 bg-gradient-to-r from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 shadow-lg hover:shadow-purple-500/30 cursor-pointer"
                 >
                   Create Profile
                 </button>
@@ -130,7 +141,6 @@ function Profile() {
           </form>
         </div>
 
-        {/* Display Selected Games - Moved outside the form and z-index wrapper */}
         <div className="relative z-0 mt-8">
           {selectedGames.length > 0 && (
             <div>
@@ -150,10 +160,19 @@ function Profile() {
                         alt={game.title}
                         className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                       />
-                      {game.favorite && (
-                        <Heart className="absolute top-2 right-2 w-6 h-6 text-red-500 fill-current animate-pulse-slow" />
+                      {game.favorite ? (
+                        <Heart
+                          onClick={() => toggleFavourite(game.id)}
+                          className="absolute top-2 right-2 w-6 h-6 text-red-500 fill-current animate-pulse-slow cursor-pointer"
+                          style={{ cursor: "pointer" }}
+                        />
+                      ) : (
+                        <Heart
+                          onClick={() => toggleFavourite(game.id)}
+                          style={{ cursor: "pointer" }}
+                          className="absolute top-2 right-2 w-6 h-6 text-gray-500 fill-current animate-pulse-slow cursor-pointer"
+                        />
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>
                     <div className="p-6 space-y-4">
                       <h2 className="text-xl font-bold group-hover:text-purple-400 transition-colors duration-300">
@@ -167,7 +186,7 @@ function Profile() {
                         </div>
                         <div className="flex items-center space-x-2 group-hover:translate-x-2 transition-transform duration-300">
                           <Trophy className="w-4 h-4 text-yellow-400" />
-                          <span className="text-gray-300">{game.maker}</span>
+                          <span className="text-gray-300">{game.genres}</span>
                         </div>
                       </div>
                     </div>

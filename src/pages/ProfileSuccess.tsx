@@ -26,7 +26,6 @@ function ProfileSuccess() {
   const [copied, setCopied] = useState(false);
   const timeoutRef = useRef<number | null>(null);
 
-  // Generate a unique profile link
   const profileLink = `${import.meta.env.VITE_SHARE_URL}${
     state?.username || "user"
   }`;
@@ -89,9 +88,9 @@ function ProfileSuccess() {
 
   return (
     <div className="min-h-screen transition-all duration-500 bg-gradient-to-b from-gray-900 to-black text-white py-16">
-      {/* Main Content */}
+
       <div className="container mx-auto px-4 max-w-2xl">
-        {/* Success Animation */}
+
         <div className="text-center mb-12">
           <div className="flex justify-center mb-6">
             <div className="relative p-6 rounded-full bg-green-500/20 animate-bounce">
@@ -113,7 +112,6 @@ function ProfileSuccess() {
           </p>
         </div>
 
-        {/* Profile Summary */}
         <div className="p-6 rounded-2xl bg-gray-800/50 backdrop-blur-sm border border-gray-700 mb-8 animate-fade-in">
           <div className="flex items-center gap-4 mb-6">
             <div className="w-16 h-16 rounded-full bg-purple-500/20 flex items-center justify-center">
@@ -150,7 +148,6 @@ function ProfileSuccess() {
           </div>
         </div>
 
-        {/* Profile Link Section */}
         <div className="p-6 rounded-2xl bg-gray-800/50 backdrop-blur-sm border border-gray-700 mb-8 animate-fade-in">
           <h3 className="text-lg font-semibold mb-4 text-gray-200">
             Your Profile Link
@@ -166,7 +163,7 @@ function ProfileSuccess() {
           <div className="flex gap-3">
             <button
               onClick={handleCopyLink}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold transition-all duration-300 ${
+              className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold transition-all duration-300 cursor-pointer ${
                 copied
                   ? "bg-green-600 text-white"
                   : "bg-purple-500 hover:bg-purple-600 text-white"
@@ -187,7 +184,7 @@ function ProfileSuccess() {
 
             <button
               onClick={handleShare}
-              className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 bg-gray-700 hover:bg-gray-600 text-white"
+              className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 bg-gray-700 hover:bg-gray-600 text-white cursor-pointer"
             >
               <Share2 className="w-4 h-4" />
               Share
@@ -195,7 +192,6 @@ function ProfileSuccess() {
           </div>
         </div>
 
-        {/* Next Steps */}
         <div className="p-6 rounded-2xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 animate-fade-in">
           <h3 className="text-lg font-semibold mb-4 text-white">
             What's Next?
@@ -203,15 +199,15 @@ function ProfileSuccess() {
           <ul className="space-y-3 text-gray-300">
             <li className="flex items-center gap-3">
               <div className="w-2 h-2 rounded-full bg-purple-400"></div>
-              <span>Share your profile link with friends</span>
+              <span>Share your profile with friends to show off your game collection</span>
             </li>
             <li className="flex items-center gap-3">
               <div className="w-2 h-2 rounded-full bg-purple-400"></div>
-              <span>Connect your gaming accounts for automatic updates</span>
+              <span>Add more games to your profile as your collection grows</span>
             </li>
             <li className="flex items-center gap-3">
               <div className="w-2 h-2 rounded-full bg-purple-400"></div>
-              <span>Start tracking your gaming achievements</span>
+              <span>Use your profile link to flex your gaming taste on social media</span>
             </li>
           </ul>
         </div>
@@ -219,7 +215,7 @@ function ProfileSuccess() {
         {/* Action Buttons */}
         <div className="flex gap-4 mt-8 mb-12">
           <Link
-            to="/new-profile"
+            to="/create-profile"
             className="flex-1 py-3 px-6 rounded-xl font-semibold text-center transition-all duration-300 transform hover:scale-105 bg-gray-700 hover:bg-gray-600 text-white"
           >
             Create Another Profile

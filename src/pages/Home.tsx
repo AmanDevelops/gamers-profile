@@ -8,12 +8,10 @@ function Home() {
   const [username, setUsername] = useState("");
 
   useEffect(() => {
-    // Check if redirected from profile creation
     if (location.state?.profileCreated) {
       setShowSuccessToast(true);
       setUsername(location.state.username);
 
-      // Hide toast after 5 seconds
       const timer = setTimeout(() => {
         setShowSuccessToast(false);
       }, 5000);
@@ -24,7 +22,7 @@ function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
-      {/* Success Toast */}
+
       {showSuccessToast && (
         <div className="fixed top-6 right-6 z-50 px-6 py-3 rounded-lg shadow-lg bg-green-600 text-white animate-slide-down">
           <div className="flex items-center gap-2">
@@ -34,7 +32,6 @@ function Home() {
         </div>
       )}
 
-      {/* Hero Section */}
       <div className="container mx-auto px-4 max-w-6xl">
         <div className="hero-content max-w-4xl mx-auto pt-24 pb-16 text-center">
           <div className="flex justify-center mb-8">
@@ -61,83 +58,78 @@ function Home() {
         </div>
       </div>
 
-      {/* Features Section */}
       <div className="container mx-auto px-4 max-w-6xl">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-16">
           <div className="bg-gray-800 p-6 rounded-xl text-center transition-transform duration-300 hover:scale-105 hover:bg-gray-750">
-            <Trophy className="w-12 h-12 text-purple-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Track Achievements</h3>
-            <p className="text-gray-400">
-              Showcase your gaming accomplishments and completion rates across
-              all platforms
-            </p>
+        <Trophy className="w-12 h-12 text-purple-400 mx-auto mb-4" />
+        <h3 className="text-xl font-semibold mb-2">Track Achievements</h3>
+        <p className="text-gray-400">
+          Document your gaming milestones and showcase your accomplishments on your profile
+        </p>
           </div>
           <div className="bg-gray-800 p-6 rounded-xl text-center transition-transform duration-300 hover:scale-105 hover:bg-gray-750">
-            <Users className="w-12 h-12 text-purple-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Connect with Gamers</h3>
-            <p className="text-gray-400">
-              Find and follow other gamers who share your interests and gaming
-              style
-            </p>
+        <Users className="w-12 h-12 text-purple-400 mx-auto mb-4" />
+        <h3 className="text-xl font-semibold mb-2">Share Your Profile</h3>
+        <p className="text-gray-400">
+          Create a personalized gaming profile and share it with the gaming community
+        </p>
           </div>
           <div className="bg-gray-800 p-6 rounded-xl text-center transition-transform duration-300 hover:scale-105 hover:bg-gray-750">
-            <Activity className="w-12 h-12 text-purple-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Live Statistics</h3>
-            <p className="text-gray-400">
-              Real-time updates of your gaming sessions and progress tracking
-            </p>
+        <Activity className="w-12 h-12 text-purple-400 mx-auto mb-4" />
+        <h3 className="text-xl font-semibold mb-2">Build Your Legacy</h3>
+        <p className="text-gray-400">
+          Catalog your gaming history and create a lasting record of your gaming journey
+        </p>
           </div>
         </div>
       </div>
 
-      {/* How It Works Section */}
       <div className="container mx-auto px-4 max-w-6xl">
         <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
         <div className="max-w-3xl mx-auto space-y-12">
-          <div className="flex flex-col md:flex-row items-center gap-8">
+            <div className="flex flex-col md:flex-row items-center gap-8">
             <div className="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center text-2xl font-bold flex-shrink-0">
               1
             </div>
             <div className="text-center md:text-left">
               <h3 className="text-xl font-semibold mb-2">
-                Create Your Profile
+              Create Your Profile
               </h3>
               <p className="text-gray-400">
-                Sign up and customize your gaming profile with your favorite
-                games, achievements, and stats
+              Sign up and set up your gamer identity with your gaming history, preferred genres, 
+              and playing style
               </p>
             </div>
-          </div>
-          <div className="flex flex-col md:flex-row items-center gap-8">
+            </div>
+            <div className="flex flex-col md:flex-row items-center gap-8">
             <div className="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center text-2xl font-bold flex-shrink-0">
               2
             </div>
             <div className="text-center md:text-left">
               <h3 className="text-xl font-semibold mb-2">
-                Connect Your Accounts
+              Track Completed Games
               </h3>
               <p className="text-gray-400">
-                Link your gaming accounts from different platforms to
-                automatically sync your progress
+              Add games you've finished to your collection, rate them, and share your completion
+              achievements and milestones
               </p>
             </div>
-          </div>
-          <div className="flex flex-col md:flex-row items-center gap-8">
+            </div>
+            <div className="flex flex-col md:flex-row items-center gap-8">
             <div className="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center text-2xl font-bold flex-shrink-0">
               3
             </div>
             <div className="text-center md:text-left">
-              <h3 className="text-xl font-semibold mb-2">Share Your Journey</h3>
+              <h3 className="text-xl font-semibold mb-2">Showcase Your Library</h3>
               <p className="text-gray-400">
-                Show off your gaming achievements and connect with a community
-                of passionate gamers
+              Display your gaming accomplishments, completion statistics, and favorite titles
+              to build your gaming legacy
               </p>
             </div>
-          </div>
+            </div>
         </div>
       </div>
 
-      {/* CTA Section */}
       <div className="container mx-auto px-4 max-w-6xl">
         <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl p-8 text-center my-16">
           <h2 className="text-4xl font-bold mb-4">
@@ -156,17 +148,17 @@ function Home() {
         </div>
       </div>
 
-      {/* Footer */}
       <footer className="border-t border-gray-800 py-8">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2 font-bold">
               <Gamepad2 className="w-6 h-6 text-purple-400" />
-              <span>GamingProfile</span>
+              <span>Gamify</span>
             </div>
 
             <p className="text-gray-400 text-sm">
-              © 2025 GamingProfile. All rights reserved.
+              <a href="https://github.com/amandevelops">© 2025 Gamify | Powered by coffee ☕ — Built by AmanDevelops</a>
+            
             </p>
           </div>
         </div>
