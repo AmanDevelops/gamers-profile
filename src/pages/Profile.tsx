@@ -1,15 +1,16 @@
-import { Gamepad2 } from "lucide-react";
-import { useState } from "react";
+import { CircleCheck, Gamepad2, Heart, Trophy } from "lucide-react";
+import React, { useState } from "react";
+import GameSelector, { type SelectedGame } from "../components/GameSelector";
 import UsernameInput, {
   type onStatusChangeProps,
 } from "../components/UsernameInput";
-import React from "react";
 
 function Profile() {
   const [username, setUsername] = useState<string>("");
 
   const [usernameStatus, setusernameStatus] =
     useState<onStatusChangeProps>("idle");
+  const [selectedGames, setSelectedGames] = useState<SelectedGame[]>([]);
 
   const handleUsernameChange = (value: string) => {
     setUsername(value);
@@ -19,10 +20,43 @@ function Profile() {
     setusernameStatus(status);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleGamesSelected = (games: SelectedGame[]) => {
+    setSelectedGames(games);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (usernameStatus === "available") {
-      alert(username);
+      try {
+        const gamesData = selectedGames.map(game => ({
+          id: game.id,
+          title: game.title,
+          image: game.image,
+          maker: game.maker,
+          playTime: game.playTime,
+          favorite: game.favorite
+        }));
+
+        const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}${username}.json`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            // username,
+            games: gamesData
+          }),
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || 'Failed to create profile');
+        }
+        alert('Profile created successfully!');
+      } catch (error) {
+        console.error('Error creating profile:', error);
+        alert('Failed to create profile. Please try again.');
+      }
     }
     return;
   };
@@ -30,7 +64,7 @@ function Profile() {
   return (
     <div className="min-h-screen transition-all duration-500 bg-gradient-to-b from-gray-900 to-black text-white">
       {/* Hero Section */}
-      <div className="container mx-auto px-4 max-w-2xl  py-16">
+      <div className="container mx-auto px-4 max-w-5xl py-16">
         <div className="text-center mb-12">
           <div className="flex justify-center mb-6">
             <div className="p-4 rounded-full bg-purple-500/20   animate-pulse">
@@ -46,18 +80,80 @@ function Profile() {
         </div>
 
         {/* Create Profile Section */}
+        <div className="relative z-10">
+          <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="p-6 rounded-2xl bg-gray-800/50 backdrop-blur-sm border border-gray-700 transition-all duration-300">
+              <label className="block text-sm font-semibold mb-3 text-gray-200">
+                Choose Your Username
+              </label>
+              <UsernameInput
+                onUsernameChange={handleUsernameChange}
+                onStatusChange={handleStatusChange}
+              />
+              <GameSelector onGamesSelected={handleGamesSelected} />
+            </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="p-6 rounded-2xl bg-gray-800/50 backdrop-blur-sm border border-gray-700 transition-all duration-300">
-            <label className="block text-sm font-semibold mb-3 text-gray-200">
-              Choose Your Username
-            </label>
-            <UsernameInput
-              onUsernameChange={handleUsernameChange}
-              onStatusChange={handleStatusChange}
-            />
-          </div>
-        </form>
+            {/* Submit Button */}
+            {selectedGames.length > 0 && (
+              <div className="flex justify-center mt-8">
+                <button
+                  type="submit"
+                  className="px-8 py-3 bg-gradient-to-r from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 shadow-lg hover:shadow-purple-500/30"
+                >
+                  Create Profile
+                </button>
+              </div>
+            )}
+          </form>
+        </div>
+
+        {/* Display Selected Games - Moved outside the form and z-index wrapper */}
+        <div className="relative z-0 mt-8">
+          {selectedGames.length > 0 && (
+            <div>
+              <h2 className="text-xl font-bold mb-4 text-purple-400">
+                Your Selected Games
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {selectedGames.map((game, index) => (
+                  <div
+                    key={game.id}
+                    className="group bg-gray-800/30 border border-purple-900/30 rounded-xl overflow-hidden hover:border-purple-500/50 transition-all duration-500 shadow-lg hover:shadow-purple-500/20 animate-fade-in"
+                    style={{ animationDelay: `${index * 150}ms` }}
+                  >
+                    <div className="relative h-48 overflow-hidden">
+                      <img
+                        src={game.image}
+                        alt={game.title}
+                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                      />
+                      {game.favorite && (
+                        <Heart className="absolute top-2 right-2 w-6 h-6 text-red-500 fill-current animate-pulse-slow" />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
+                    <div className="p-6 space-y-4">
+                      <h2 className="text-xl font-bold group-hover:text-purple-400 transition-colors duration-300">
+                        {game.title}
+                      </h2>
+                      <div className="space-y-3">
+                        <div className="flex items-center space-x-2 group-hover:translate-x-2 transition-transform duration-300">
+                          <CircleCheck className="w-4 h-4 text-green-400" />
+
+                          <span className="text-gray-300">{game.playTime}</span>
+                        </div>
+                        <div className="flex items-center space-x-2 group-hover:translate-x-2 transition-transform duration-300">
+                          <Trophy className="w-4 h-4 text-yellow-400" />
+                          <span className="text-gray-300">{game.maker}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

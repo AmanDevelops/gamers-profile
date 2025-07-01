@@ -18,7 +18,7 @@ function Home() {
             connect with fellow gamers
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/profile" className="cursor-pointer bg-purple-500 hover:bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 inline-block text-center">
+            <Link to="/create-profile" className="cursor-pointer bg-purple-500 hover:bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 inline-block text-center">
               Create Your Profile
             </Link>
             <button className="cursor-pointer bg-gray-800 hover:bg-gray-700 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">
@@ -114,9 +114,9 @@ function Home() {
             Join thousands of gamers who are already tracking their progress and
             sharing their achievements
           </p>
-          <button className="cursor-pointer bg-white text-purple-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">
+          <Link to="/create-profile" className="cursor-pointer bg-white text-purple-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">
             Get Started Now
-          </button>
+          </Link>
         </div>
       </div>
 
