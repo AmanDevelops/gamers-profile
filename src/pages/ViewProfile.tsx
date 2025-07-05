@@ -82,27 +82,29 @@ function ViewProfile() {
     );
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col">
-
+    <div className="min-h-screen bg-black text-white flex flex-col text-wrap">
       <header className="bg-black border-b border-purple-900/30 py-6">
-        <div className="container mx-auto px-4 flex justify-between">
+        <div className="container mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="flex items-center space-x-4">
             <Gamepad2 className="w-8 h-8 text-purple-500 animate-float" />
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-500 via-fuchsia-500 to-pink-500 bg-clip-text text-transparent animate-glow">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-purple-500 via-fuchsia-500 to-pink-500 bg-clip-text text-transparent animate-glow text-center sm:text-left">
               {username}'s Gaming Journey
             </h1>
           </div>
-          <Link to="/create-profile"
-            className="flex items-center gap-2 px-5 py-2.5 
+          <Link
+            to="/create-profile"
+            className="flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 
                  bg-gradient-to-r from-purple-500 via-fuchsia-500 to-pink-500 
-                 text-white text-base font-semibold 
+                 text-white text-sm sm:text-base font-semibold 
                  rounded-2xl shadow-lg transition-transform duration-200 
                  cursor-pointer
                  hover:scale-105 hover:shadow-xl 
-                 focus:outline-none focus:ring-2 focus:ring-pink-300"
+                 focus:outline-none focus:ring-2 focus:ring-pink-300
+                 whitespace-nowrap"
           >
-            <Plus className="w-5 h-5" />
-            Create Your Profile Now
+            <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="hidden sm:inline">Create Your Profile Now</span>
+            <span className="sm:hidden">Create Profile</span>
           </Link>
         </div>
       </header>
@@ -149,9 +151,11 @@ function ViewProfile() {
 
       <footer className="bg-black border-t border-purple-900/30 py-6 mt-auto">
         <div className="container mx-auto px-4 text-center text-gray-500">
-            <p className="hover:text-purple-400 transition-colors duration-300">
-            <a href="https://github.com/amandevelops">© 2025 Gamify | Powered by coffee ☕ — Crafted by AmanDevelops 🛠️</a>
-            </p>
+          <p className="hover:text-purple-400 transition-colors duration-300">
+            <a href="https://github.com/amandevelops">
+              © 2025 Gamify | Powered by coffee ☕ — Crafted by AmanDevelops 🛠️
+            </a>
+          </p>
         </div>
       </footer>
     </div>
