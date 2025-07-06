@@ -1,4 +1,4 @@
-import { CircleCheck, Gamepad2, Heart, Trophy } from "lucide-react";
+import { Rocket, Gamepad2, Heart, Trophy, CircleCheck } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import GameSelector, { type SelectedGame } from "../components/GameSelector";
@@ -46,7 +46,7 @@ const handleGamesSelected = (games: SelectedGame[]) => {
       id: game.id,
       title: game.title,
       image: game.image,
-      genres: game.genres,
+      released: game.released,
       playTime: game.playTime,
       favorite: game.favorite,
     }));
@@ -55,7 +55,7 @@ const handleGamesSelected = (games: SelectedGame[]) => {
     games.map((game) => ({
       id: game.id,
       name: game.title,
-      genre: game.genres,
+      released: game.released,
     }));
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -185,8 +185,8 @@ const handleGamesSelected = (games: SelectedGame[]) => {
                           <span className="text-gray-300">{game.playTime}</span>
                         </div>
                         <div className="flex items-center space-x-2 group-hover:translate-x-2 transition-transform duration-300">
-                          <Trophy className="w-4 h-4 text-yellow-400" />
-                          <span className="text-gray-300">{game.genres}</span>
+                          <Rocket className="w-4 h-4 text-yellow-400" />
+                          Released: &nbsp;<span className="text-gray-300">{game.released.slice(0,4)}</span>
                         </div>
                       </div>
                     </div>

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 interface ApiGame {
   id: number;
   name: string;
-  genre: string;
+  released: string;
   image: string;
 }
 
@@ -12,7 +12,7 @@ export interface SelectedGame {
   id: number;
   title: string;
   image: string;
-  genres: string;
+  released: string;
   playTime: string;
   favorite: boolean;
 }
@@ -25,6 +25,7 @@ function GameSelector({ onGamesSelected }: GameSelectorProps) {
   const [gameSearch, setGameSearch] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [filteredGames, setFilteredGames] = useState<ApiGame[]>([]);
+  const [preloadGame, setPreloadGame] = useState<ApiGame[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedGames, setSelectedGames] = useState<SelectedGame[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -32,6 +33,16 @@ function GameSelector({ onGamesSelected }: GameSelectorProps) {
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    const fetchPopularGames = async () => {
+      const response = await fetch(
+        "https://api-gamify-default-rtdb.firebaseio.com/games.json"
+      );
+      const popularGames = await response.json();
+      setPreloadGame(popularGames);
+    };
+
+    fetchPopularGames();
+
     const handleClickOutside = (event: MouseEvent) => {
       if (
         dropdownRef.current &&
@@ -48,45 +59,74 @@ function GameSelector({ onGamesSelected }: GameSelectorProps) {
   }, []);
 
   useEffect(() => {
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
-    }
-
     if (gameSearch.trim().length > 2) {
       setIsLoading(true);
-      searchTimeoutRef.current = setTimeout(async () => {
-        try {
-          const response = await fetch(
-            `https://api.rawg.io/api/games?search=${gameSearch}&key=${import.meta.env.VITE_RAWG_API_KEY}&page_size=5`
-          );
-          const data = await response.json();
-          setFilteredGames(
-            data.results.map((game: any) => ({
-              id: game.id,
-              name: game.name,
-              genre: game.genres?.length > 0 ? game.genres[0].name : "Unknown",
-              image:
-                game.background_image ||
-                "https://via.placeholder.com/300x150?text=No+Image",
-            }))
-          );
-        } catch (error) {
-          console.error("Error fetching games:", error);
-          setFilteredGames([]);
-        } finally {
-          setIsLoading(false);
-        }
-      }, 1000);
+      const searchTerm = gameSearch.trim().toLowerCase();
+
+      // Run local search immediately
+      let matches: ApiGame[] = [];
+      if (preloadGame && typeof preloadGame === "object") {
+        matches = Object.entries(preloadGame)
+          .map(([key, game]) => ({
+            id: key,
+            name: game.name || "",
+            released: game.release,
+            image: game.background_image,
+          }))
+          .filter((game) => game.name.toLowerCase().includes(searchTerm));
+        matches.sort((a, b) => {
+          const aName = a.name?.toLowerCase() || "";
+          const bName = b.name?.toLowerCase() || "";
+
+          if (aName === searchTerm && bName !== searchTerm) return -1;
+          if (bName === searchTerm && aName !== searchTerm) return 1;
+
+          if (aName.startsWith(searchTerm) && !bName.startsWith(searchTerm))
+            return -1;
+          if (bName.startsWith(searchTerm) && !aName.startsWith(searchTerm))
+            return 1;
+
+          return aName.localeCompare(bName);
+        }); // sort alphabetically by name
+        setFilteredGames(matches.slice(0, 5));
+      }
+
+      // Only debounce the API call if no local results
+      if (matches.length === 0) {
+        if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+        searchTimeoutRef.current = setTimeout(async () => {
+          try {
+            const response = await fetch(
+              `https://api.rawg.io/api/games?search=${gameSearch}&key=${
+                import.meta.env.VITE_RAWG_API_KEY
+              }&page_size=5`
+            );
+            const data = await response.json();
+            setFilteredGames(
+              data.results.map((game: any) => ({
+                id: game.id,
+                name: game.name,
+                released: game.released,
+                image: game.background_image,
+              }))
+            );
+          } catch (error) {
+            setFilteredGames([]);
+          } finally {
+            setIsLoading(false);
+          }
+        }, 1000);
+      } else {
+        setIsLoading(false);
+      }
     } else {
       setFilteredGames([]);
     }
 
     return () => {
-      if (searchTimeoutRef.current) {
-        clearTimeout(searchTimeoutRef.current);
-      }
+      if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
     };
-  }, [gameSearch]);
+  }, [gameSearch, preloadGame]);
 
   useEffect(() => {
     if (onGamesSelected) {
@@ -99,7 +139,7 @@ function GameSelector({ onGamesSelected }: GameSelectorProps) {
       id: game.id,
       title: game.name,
       image: game.image,
-      genres: game.genre,
+      released: game.released,
       playTime: "Finished",
       favorite: false,
     };
@@ -153,7 +193,9 @@ function GameSelector({ onGamesSelected }: GameSelectorProps) {
                   className="w-full px-4 py-3 text-left hover:bg-purple-500/10 transition-colors border-b last:border-b-0 border-gray-600 hover:text-purple-300"
                 >
                   <div className="font-medium">{game.name}</div>
-                  <div className="text-sm text-gray-400">{game.genre}</div>
+                  <div className="text-sm text-gray-400">
+                    {game.released.slice(0, 4)}
+                  </div>
                 </button>
               ))
             ) : gameSearch.trim().length > 2 ? (
@@ -168,7 +210,6 @@ function GameSelector({ onGamesSelected }: GameSelectorProps) {
           </div>
         )}
       </div>
-
     </div>
   );
 }
