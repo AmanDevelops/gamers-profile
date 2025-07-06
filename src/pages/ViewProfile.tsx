@@ -1,4 +1,4 @@
-import { CircleCheck, Gamepad2, Heart, Plus, Rocket, Trophy } from "lucide-react";
+import { CircleCheck, Gamepad2, Heart, Plus, Rocket } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
@@ -140,7 +140,7 @@ function ViewProfile() {
                   </div>
                   <div className="flex items-center space-x-2 group-hover:translate-x-2 transition-transform duration-300">
                     <Rocket className="w-4 h-4 text-yellow-400" />
-                    <span className="text-gray-300">{game.released}</span>
+                    <span className="text-gray-300">{game.released.slice(0,4)}</span>
                   </div>
                 </div>
               </div>

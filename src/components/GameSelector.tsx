@@ -1,13 +1,23 @@
 import { ChevronDown, Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+// for firebase api
 interface ApiGame {
   id: number;
   name: string;
-  released: string;
-  image: string;
+  release: string;
+  background_image: string;
 }
 
+// for rawg.io api
+interface ApiGameV2 {
+  id: number;
+  name: string;
+  released: string;
+  background_image: string;
+}
+
+// for users/user.json
 export interface SelectedGame {
   id: number;
   title: string;
@@ -24,7 +34,7 @@ interface GameSelectorProps {
 function GameSelector({ onGamesSelected }: GameSelectorProps) {
   const [gameSearch, setGameSearch] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [filteredGames, setFilteredGames] = useState<ApiGame[]>([]);
+  const [filteredGames, setFilteredGames] = useState<(ApiGame|ApiGameV2)[]>([]);
   const [preloadGame, setPreloadGame] = useState<ApiGame[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedGames, setSelectedGames] = useState<SelectedGame[]>([]);
@@ -63,15 +73,14 @@ function GameSelector({ onGamesSelected }: GameSelectorProps) {
       setIsLoading(true);
       const searchTerm = gameSearch.trim().toLowerCase();
 
-      // Run local search immediately
-      let matches: ApiGame[] = [];
+      let matches: ApiGameV2[] = [];
       if (preloadGame && typeof preloadGame === "object") {
         matches = Object.entries(preloadGame)
           .map(([key, game]) => ({
-            id: key,
+            id: parseInt(key, 10),
             name: game.name || "",
             released: game.release,
-            image: game.background_image,
+            background_image: game.background_image,
           }))
           .filter((game) => game.name.toLowerCase().includes(searchTerm));
         matches.sort((a, b) => {
@@ -87,11 +96,16 @@ function GameSelector({ onGamesSelected }: GameSelectorProps) {
             return 1;
 
           return aName.localeCompare(bName);
-        }); // sort alphabetically by name
-        setFilteredGames(matches.slice(0, 5));
+        });
+        setFilteredGames(matches.map(game => ({
+          id: game.id,
+          name: game.name,
+          release: game.released,
+          background_image: game.background_image,
+          image: game.background_image,
+        })).slice(0, 5));
       }
 
-      // Only debounce the API call if no local results
       if (matches.length === 0) {
         if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
         searchTimeoutRef.current = setTimeout(async () => {
@@ -107,7 +121,7 @@ function GameSelector({ onGamesSelected }: GameSelectorProps) {
                 id: game.id,
                 name: game.name,
                 released: game.released,
-                image: game.background_image,
+                background_image: game.background_image,
               }))
             );
           } catch (error) {
@@ -134,12 +148,12 @@ function GameSelector({ onGamesSelected }: GameSelectorProps) {
     }
   }, [selectedGames]);
 
-  const handleGameSelect = (game: ApiGame) => {
+  const handleGameSelect = (game: ApiGame | ApiGameV2) => {
     const newGame: SelectedGame = {
       id: game.id,
       title: game.name,
-      image: game.image,
-      released: game.released,
+      image: game.background_image,
+      released: 'release' in game ? game.release : game.released,
       playTime: "Finished",
       favorite: false,
     };
@@ -194,7 +208,7 @@ function GameSelector({ onGamesSelected }: GameSelectorProps) {
                 >
                   <div className="font-medium">{game.name}</div>
                   <div className="text-sm text-gray-400">
-                    {game.released.slice(0, 4)}
+                    {(('release' in game) ? game.release : game.released)?.slice(0, 4)}
                   </div>
                 </button>
               ))

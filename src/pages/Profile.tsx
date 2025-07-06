@@ -1,4 +1,4 @@
-import { Rocket, Gamepad2, Heart, Trophy, CircleCheck } from "lucide-react";
+import { Rocket, Gamepad2, Heart, CircleCheck } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import GameSelector, { type SelectedGame } from "../components/GameSelector";
