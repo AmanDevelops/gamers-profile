@@ -31,7 +31,7 @@ function UsernameInput({ onUsernameChange, onStatusChange }: UsernameInputProps)
       const checkUsername = async () => {
         try {
           const response = await fetch(
-            `${import.meta.env.VITE_API_ENDPOINT}${username.toLowerCase()}.json`
+            `${import.meta.env.VITE_API_ENDPOINT}/users/${username.toLowerCase()}.json`
           );
           const data = await response.json();
 

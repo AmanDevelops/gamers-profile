@@ -65,7 +65,7 @@ const handleGamesSelected = (games: SelectedGame[]) => {
         const gamesData = mapSelectedGames(selectedGames);
 
         const response = await fetch(
-          `${import.meta.env.VITE_API_ENDPOINT}${username.toLowerCase()}.json`,
+          `${import.meta.env.VITE_API_ENDPOINT}/users/${username.toLowerCase()}.json`,
           {
             method: "PATCH",
             headers: {
