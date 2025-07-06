@@ -1,4 +1,4 @@
-import { CircleCheck, Gamepad2, Heart, Plus, Trophy } from "lucide-react";
+import { CircleCheck, Gamepad2, Heart, Plus, Rocket, Trophy } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
@@ -6,7 +6,7 @@ interface Game {
   id: number;
   title: string;
   image: string;
-  genres: string;
+  released: string;
   playTime: string;
   favorite: boolean;
 }
@@ -139,8 +139,8 @@ function ViewProfile() {
                     <span className="text-gray-300">{game.playTime}</span>
                   </div>
                   <div className="flex items-center space-x-2 group-hover:translate-x-2 transition-transform duration-300">
-                    <Trophy className="w-4 h-4 text-yellow-400" />
-                    <span className="text-gray-300">{game.genres}</span>
+                    <Rocket className="w-4 h-4 text-yellow-400" />
+                    <span className="text-gray-300">{game.released}</span>
                   </div>
                 </div>
               </div>
